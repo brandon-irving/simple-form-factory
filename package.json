@@ -1,10 +1,10 @@
 {
   "name": "simple-form-factory",
   "version": "1.0.0",
-  "description": "Create forms using whatever form components you want",
+  "description": "Simple and unopinionated form factory.",
   "author": "brandon-irving",
   "license": "MIT",
-  "repository": "brandon-irving/react-form-factory",
+  "repository": "brandon-irving/simple-form-factory",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.js",
