@@ -4,7 +4,7 @@ import { FormFactory } from 'simple-form-factory'
 import 'simple-form-factory/dist/index.css'
 
 const componentList = {
-  Input: (props) => {    
+  Input: (props) => {        
   return <>
   <p>title example</p>
   <input {...props} />

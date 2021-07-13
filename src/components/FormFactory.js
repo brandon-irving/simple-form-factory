@@ -71,7 +71,6 @@ const FormFactoryInternal = ({
     onSubmit && (await onSubmit(formValues))
     setDirty(false)
   }
-
   function handleCancel() {
     onCancel &&
       onCancel({
@@ -116,12 +115,12 @@ const FormFactoryInternal = ({
 }
 
 const FormFactory = ({
-  componentList,
+  componentList = {},
   blueprint,
-  initialValues,
+  initialValues = {},
   SubmitButton,
   CancelButton,
-  validation
+  validation = () => {}
 }) => {
   return (
     <FormSetupProvider
