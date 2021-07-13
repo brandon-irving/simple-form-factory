@@ -12,11 +12,49 @@ npm install --save simple-form-factory
 
 ## Usage
 
+```bash
+import { FormFactory } from 'simple-form-factory'
+
+    <FormFactory
+      initialValues={initialValues}
+      validation={validation}
+      componentList={componentList}
+      blueprint={blueprint}
+      SubmitButton={(props)=>SubmitButton({...props, setInitialValues})}
+      CancelButton={CancelButton}
+    />
+```
+
+## Props
+```jsx
+initialValues?: object // The initial form values, for the factory to manage
+validation?: () => ErrorObject 
+componentList?: ComponentsObject 
+blueprint: BluePrintObject // 
+SubmitButton?: (props)=>React.Component
+CancelButton?: (props)=>React.Component
+
+Object Definitions
+inputObject = {...HTML.InputProps, hideColumn: (props)=>boolean, hideInput: (props)=>boolean } // id && type are required
+ErrorObject = {[field]: 'Error', [field2]: undefined} // field: 'error message'
+ComponentsObject =  { Input: (props)=>React.Component, Select: (props)=>React.Component} // props has all the input props, errors and value
+BluePrintObject = { rows: int, cols: [{ 1. inputObject }]}
+```
+## Useful Examples
+```jsx
+// 3 rows, 1st row : 3 cols, 2nd row : 1 cols, 3rd row : 4 cols, 
+const blueprint = { rows: 3, cols: [
+{ 1: {...inputProps}, 2: {...inputProps}, 3: {...inputProps} },
+{ 1: {...inputProps} },
+{ 1: {...inputProps}, 2: {...inputProps}, 3: {...inputProps}, 4: {...inputProps} },
+]}
+
+```
+## Advanced Full Example
 ```jsx
 import React from 'react'
 import { blueprint } from './blueprint'
 import { FormFactory } from 'simple-form-factory'
-import 'simple-form-factory/dist/index.css'
 
 const componentList = {
   Input: (props) => {    
@@ -42,7 +80,7 @@ return <button disabled={!props.dirty} type="submit" onClick={handleSubmit}>Subm
 
 const CancelButton = ()=><button>Delete</button>
 
-const App = () => {
+const Example = () => {
   const [initialValues, setInitialValues] = React.useState({
     name: 'Brandon',
     middleName: 'Jamal',
@@ -65,7 +103,6 @@ const App = () => {
   )
 }
 
-export default App
 
 ```
 
