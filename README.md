@@ -1,4 +1,4 @@
-# react-form-factory
+# simple-form-factory
 
 > Create forms using whatever form components you want
 
