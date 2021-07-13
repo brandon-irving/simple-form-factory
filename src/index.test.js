@@ -1,7 +1,7 @@
-import { FormFactoryComponent } from '.'
+import { FormFactory } from '.'
 
-describe('FormFactoryComponent', () => {
+describe('FormFactory', () => {
   it('is truthy', () => {
-    expect(FormFactoryComponent).toBeTruthy()
+    expect(FormFactory).toBeTruthy()
   })
 })

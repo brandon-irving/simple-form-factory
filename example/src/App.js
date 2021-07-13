@@ -1,7 +1,7 @@
 import React from 'react'
 import { blueprint } from './blueprint'
-import { FormFactory } from 'react-form-factory'
-import 'react-form-factory/dist/index.css'
+import { FormFactory } from 'simple-form-factory'
+import 'simple-form-factory/dist/index.css'
 
 const componentList = {
   Input: (props) => {    

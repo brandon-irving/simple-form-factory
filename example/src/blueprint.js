@@ -8,7 +8,7 @@ const inputProps = (id) => ({
       }
     },
     size: { lg: 3 },
-    onBlur: (props) => console.log('log: onBlur', props),
+    onBlur: (props) => {},
     hideColumn: (props) => false,
     hideInput: (props) => false
   })

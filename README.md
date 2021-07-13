@@ -1,13 +1,13 @@
-# react-form-factory
+# simple-form-factory
 
 > Create forms using whatever form components you want
 
-[![NPM](https://img.shields.io/npm/v/react-form-factory.svg)](https://www.npmjs.com/package/react-form-factory) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/simple-form-factory.svg)](https://www.npmjs.com/package/simple-form-factory) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Install
 
 ```bash
-npm install --save react-form-factory
+npm install --save simple-form-factory
 ```
 
 ## Usage
@@ -15,8 +15,8 @@ npm install --save react-form-factory
 ```jsx
 import React from 'react'
 import { blueprint } from './blueprint'
-import { FormFactory } from 'react-form-factory'
-import 'react-form-factory/dist/index.css'
+import { FormFactory } from 'simple-form-factory'
+import 'simple-form-factory/dist/index.css'
 
 const componentList = {
   Input: (props) => {    
