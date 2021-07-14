@@ -3,9 +3,21 @@ import * as React from 'react'
 const FormSetupContext = React.createContext()
 
 export function FormSetupProvider(props) {
-  const [formValues, setFormValues] = React.useState(props.initialValues)
+  const initialState =
+    props.sessionKey && window.sessionStorage[`${props.sessionKey}`]
+      ? JSON.parse(window.sessionStorage[`${props.sessionKey}`]) ||
+        props.initialValues
+      : props.initialValues
+  const [formValues, setformValues] = React.useState(initialState)
   const [dirty, setDirty] = React.useState(false)
   const [errors, setErrors] = React.useState({})
+
+  function setFormValues(value) {
+    props.sessionKey &&
+      window.sessionStorage.setItem(props.sessionKey, JSON.stringify(value))
+    setformValues(value)
+  }
+
   function checkIfDirty() {
     let currentState = false
     Object.keys(formValues).forEach((valueKey) => {

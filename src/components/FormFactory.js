@@ -64,19 +64,10 @@ const FormFactoryInternal = ({
   SubmitButton,
   CancelButton
 }) => {
+  const [submitCount, setSubmitCount] = React.useState(0)
   const { formValues, dirty, setDirty } = useFormSetup()
   const { rows, cols } = blueprint
-  async function handleSubmit() {
-    console.log('log: formValues', formValues)
-    onSubmit && (await onSubmit(formValues))
-    setDirty(false)
-  }
-  function handleCancel() {
-    onCancel &&
-      onCancel({
-        ...useFormSetup()
-      })
-  }
+
   const buttonContainerStle = {
     margin: '20px',
     paddingLeft: '15px',
@@ -95,17 +86,35 @@ const FormFactoryInternal = ({
     disabled: !dirty
   }
 
+  const buttonProps = {
+    ...useFormSetup(),
+    submitCount,
+    setSubmitCount
+  }
+
+  async function handleSubmit() {
+    onSubmit && (await onSubmit(formValues))
+    setSubmitCount(submitCount + 1)
+    setDirty(false)
+  }
+
+  function handleCancel() {
+    onCancel &&
+      onCancel({
+        ...useFormSetup()
+      })
+  }
   return (
     <Container>
-      <RowGenerator handleSubmit={handleSubmit} rows={rows} cols={cols} />
+      <RowGenerator rows={rows} cols={cols} />
       <Row style={buttonContainerStle}>
         {SubmitButton ? (
-          <SubmitButton {...useFormSetup()} />
+          <SubmitButton {...buttonProps} />
         ) : (
           <button {...submitButtonProps}> Submit </button>
         )}
         {CancelButton ? (
-          <CancelButton {...useFormSetup()} />
+          <CancelButton {...buttonProps} />
         ) : (
           <button {...cancelButtonProps}> Cancel </button>
         )}
@@ -120,10 +129,12 @@ const FormFactory = ({
   initialValues = {},
   SubmitButton,
   CancelButton,
-  validation = () => {}
+  validation = () => {},
+  sessionKey = null
 }) => {
   return (
     <FormSetupProvider
+      sessionKey={sessionKey}
       componentList={componentList}
       initialValues={initialValues}
       validation={validation}

@@ -40,6 +40,7 @@ const App = () => {
   }
   return (
     <FormFactory
+      sessionKey="example"
       initialValues={initialValues}
       validation={validation}
       componentList={componentList}

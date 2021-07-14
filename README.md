@@ -16,6 +16,7 @@ npm install --save simple-form-factory
 import { FormFactory } from 'simple-form-factory'
 
     <FormFactory
+      sessionKey='example'
       initialValues={initialValues}
       validation={validation}
       componentList={componentList}
@@ -27,6 +28,7 @@ import { FormFactory } from 'simple-form-factory'
 
 ## Props
 ```jsx
+sessionKey?: string // caches the state object in session memory
 initialValues?: object // The initial form values, for the factory to manage
 validation?: () => ErrorObject 
 componentList?: ComponentsObject 

@@ -22,27 +22,11 @@ const InputLibrary = (coreProps) => {
           ))}
         </select>
       )
-  const inputs = {
-    select: <SelectInput {...inputProps} />,
-    text: <TextInput {...inputProps} />,
-    checkbox: <TextInput {...inputProps} />,
-    color: <TextInput {...inputProps} />,
-    date: <TextInput {...inputProps} />,
-    email: <TextInput {...inputProps} />,
-    file: <TextInput {...inputProps} />,
-    image: <TextInput {...inputProps} />,
-    number: <TextInput {...inputProps} />,
-    radio: <TextInput {...inputProps} />,
-    reset: <TextInput {...inputProps} />,
-    search: <TextInput {...inputProps} />,
-    submit: <TextInput {...inputProps} />,
-    tel: <TextInput {...inputProps} />,
-    time: <TextInput {...inputProps} />,
-    url: <TextInput {...inputProps} />,
-    week: <TextInput {...inputProps} />
-  }
-
-  return inputs[inputProps.type]
+  return inputProps.type === 'select' ? (
+    <SelectInput {...inputProps} />
+  ) : (
+    <TextInput {...inputProps} />
+  )
 }
 export function InputHandler(props) {
   const { formValues, setFormValues, inputProps } = props
@@ -60,6 +44,7 @@ export function InputHandler(props) {
     onChange &&
       (await onChange({
         value,
+        formValues: { ...formValues, [id]: value },
         updateForm: (newValues) => updateForm({ ...newValues, [id]: value })
       }))
   }
