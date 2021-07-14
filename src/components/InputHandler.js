@@ -43,6 +43,7 @@ export function InputHandler(props) {
     setFormValues({ ...formValues, [id]: value })
     onChange &&
       (await onChange({
+        field: id,
         value,
         formValues: { ...formValues, [id]: value },
         updateForm: (newValues) => updateForm({ ...newValues, [id]: value })
