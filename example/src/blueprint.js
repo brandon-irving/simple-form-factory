@@ -2,7 +2,8 @@ const inputProps = (id) => ({
     // ...inputProps (id, name, type, onChange, onBlur, onFocus)
     id,
     type: 'text',
-    onChange: ({ value, updateForm }) => {
+    onChange: (props) => {
+      const { id, value, updateForm } = props   
       if (id === 'name' && !value.length) {
         updateForm({ lastName: 'Error', middleName: 'Error' })
       }

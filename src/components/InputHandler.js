@@ -40,13 +40,15 @@ export function InputHandler(props) {
 
   async function handleChange(e) {
     const value = e.target.value
-    setFormValues({ ...formValues, [id]: value })
+    const currentFormValues = { ...formValues, [id]: value }
+    setFormValues(currentFormValues)
     onChange &&
       (await onChange({
-        field: id,
+        id,
         value,
         formValues: { ...formValues, [id]: value },
-        updateForm: (newValues) => updateForm({ ...newValues, [id]: value })
+        updateForm: (newValues) =>
+          updateForm({ ...currentFormValues, ...newValues })
       }))
   }
 
