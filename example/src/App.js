@@ -44,7 +44,7 @@ const App = () => {
       initialValues={initialValues}
       validation={validation}
       componentList={componentList}
-      blueprint={blueprint}
+      blueprint={{...blueprint, rowStyle: {margin: '20px'}}}
       SubmitButton={(props)=>SubmitButton({...props, setInitialValues})}
       CancelButton={CancelButton}
     />

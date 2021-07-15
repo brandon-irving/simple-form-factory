@@ -38,16 +38,15 @@ function ColGenerator(props) {
 }
 
 function RowGenerator(props) {
-  const { rows, cols } = props
+  const { rows, cols, rowStyle } = props
+  console.log('log: row style', rowStyle )
   return (
     <React.Fragment>
       {rowArray(rows).map((_, index) => {
         return (
           <Row
             key={index}
-            style={{
-              margin: '20px'
-            }}
+            style={rowStyle}
           >
             <ColGenerator cols={cols} rowIndex={index} />
           </Row>
@@ -66,7 +65,7 @@ const FormFactoryInternal = ({
 }) => {
   const [submitCount, setSubmitCount] = React.useState(0)
   const { formValues, dirty, setDirty } = useFormSetup()
-  const { rows, cols } = blueprint
+  const { rows, cols, rowStyle={} } = blueprint
 
   const buttonContainerStle = {
     margin: '20px',
@@ -106,7 +105,7 @@ const FormFactoryInternal = ({
   }
   return (
     <Container>
-      <RowGenerator rows={rows} cols={cols} />
+      <RowGenerator rows={rows} cols={cols} rowStyle={rowStyle} />
       <Row style={buttonContainerStle}>
         {SubmitButton ? (
           <SubmitButton {...buttonProps} />
