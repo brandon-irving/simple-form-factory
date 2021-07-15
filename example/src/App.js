@@ -4,28 +4,34 @@ import { FormFactory } from 'simple-form-factory'
 import 'simple-form-factory/dist/index.css'
 
 const componentList = {
-  Input: (props) => {        
-  return <>
-  <p>title example</p>
-  <input {...props} />
-  {!!props.errors[props.id] && <div>{props.errors[props.id]}</div>}
-  </>
-},
+  Input: (props) => {
+    return (
+      <>
+        <p>title example</p>
+        <input {...props} />
+        {!!props.errors[props.id] && <div>{props.errors[props.id]}</div>}
+      </>
+    )
+  },
   Select: (props) => {
     return <select {...props}></select>
   }
 }
 
-const SubmitButton = (props)=>{
-  function handleSubmit(e){
+const SubmitButton = (props) => {
+  function handleSubmit(e) {
     e.preventDefault()
     props.setInitialValues(props.formValues)
     props.setDirty(false)
   }
-return <button disabled={!props.dirty} type="submit" onClick={handleSubmit}>Submit</button>
+  return (
+    <button disabled={!props.dirty} type='submit' onClick={handleSubmit}>
+      Submit
+    </button>
+  )
 }
 
-const CancelButton = ()=><button>Delete</button>
+const CancelButton = () => <button>Delete</button>
 
 const App = () => {
   const [initialValues, setInitialValues] = React.useState({
@@ -33,19 +39,19 @@ const App = () => {
     middleName: 'Jamal',
     lastName: 'irving'
   })
-  function validation(values){
+  function validation(values) {
     const errors = {}
-    if(!values.name.length) errors.name = 'Error'
+    if (!values.name.length) errors.name = 'Error'
     return errors
   }
   return (
     <FormFactory
-      sessionKey="example"
+      sessionKey='example'
       initialValues={initialValues}
       validation={validation}
       componentList={componentList}
-      blueprint={{...blueprint, rowStyle: {margin: '20px'}}}
-      SubmitButton={(props)=>SubmitButton({...props, setInitialValues})}
+      blueprint={{ ...blueprint, rowStyle: { margin: '20px' } }}
+      SubmitButton={(props) => SubmitButton({ ...props, setInitialValues })}
       CancelButton={CancelButton}
     />
   )
