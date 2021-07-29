@@ -2,17 +2,23 @@ import React from 'react'
 import { useFormSetup } from '../context'
 
 const InputLibrary = (coreProps) => {
-  const noneInputFields = ['hideColumn', 'hideInput']
-  const inputProps = Object.keys(coreProps).reduce((acc, propKey) => {
-    if (noneInputFields.includes(propKey)) return acc
-    return { ...acc, [propKey]: coreProps[propKey] }
-  }, {})
   const {
     componentList: { Input, Select },
-    errors
+    errors,
+    submitCount
   } = useFormSetup()
-  inputProps.errors = errors
+
+  const noneInputFields = ['hideColumn', 'hideInput']
+  const allProps = { ...coreProps, submitcount: submitCount }
+  const inputProps = Object.keys(allProps).reduce((acc, propKey) => {
+    if (noneInputFields.includes(propKey)) return acc
+    return { ...acc, [propKey]: allProps[propKey] }
+  }, {})
+
+  inputProps.errors = errors || {}
+
   const TextInput = Input || ((props) => <input {...props} />)
+
   const SelectInput = Select
     ? (props) => <Select {...props} />
     : (props) => (
@@ -22,6 +28,7 @@ const InputLibrary = (coreProps) => {
           ))}
         </select>
       )
+
   return inputProps.type === 'select' ? (
     <SelectInput {...inputProps} />
   ) : (
@@ -29,9 +36,18 @@ const InputLibrary = (coreProps) => {
   )
 }
 export function InputHandler(props) {
-  const { formValues, setFormValues, inputProps } = props
+  const { formValues, setFormValues, inputProps, rowId } = props
   const { id, onChange } = inputProps
-  const value = formValues[id]
+  const baseId = id.replace(rowId, '')
+  const value = () => {
+    let desiredValue = !rowId
+      ? formValues[id]
+      : formValues[rowId] && formValues[rowId][baseId]
+    if (rowId === 'topRow') {
+      desiredValue = formValues[Object.keys(formValues)[0]][id]
+    }
+    return desiredValue
+  }
 
   async function updateForm(updates = {}) {
     const newValues = { ...formValues, ...updates }
@@ -39,20 +55,51 @@ export function InputHandler(props) {
   }
 
   async function handleChange(e) {
-    const value = e.target.value
-    const currentFormValues = { ...formValues, [id]: value }
-    setFormValues(currentFormValues)
+    const value =
+      e.target.type !== 'checkbox' ? e.target.value : e.target.checked
+
+    const currentFormValues = () => {
+      let desiredCurrentFormValues = !rowId
+        ? { ...formValues, [id]: value }
+        : {
+            ...formValues,
+            [rowId]: { ...formValues[rowId], [baseId]: value }
+          }
+      if (rowId === 'topRow') {
+        desiredCurrentFormValues = Object.keys(desiredCurrentFormValues).reduce(
+          (acc, rowId) => {
+            const row = { ...desiredCurrentFormValues[rowId], [id]: value }
+            return { ...acc, [rowId]: row }
+          },
+          {}
+        )
+      }
+
+      return desiredCurrentFormValues
+    }
+
+    setFormValues(currentFormValues())
+
     onChange &&
       (await onChange({
         id,
         value,
-        formValues: { ...formValues, [id]: value },
+        formValues: currentFormValues(),
         updateForm: (newValues) =>
-          updateForm({ ...currentFormValues, ...newValues })
+          updateForm({ ...currentFormValues(), ...newValues }),
+        rowId,
+        baseId
       }))
   }
+  // console.log('log: inputProps', {inputProps})
 
   return (
-    <InputLibrary {...props.inputProps} value={value} onChange={handleChange} />
+    <InputLibrary
+      {...props.inputProps}
+      baseid={baseId}
+      rowid={rowId}
+      value={value()}
+      onChange={handleChange}
+    />
   )
 }

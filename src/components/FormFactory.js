@@ -3,10 +3,12 @@ import { FormSetupProvider, useFormSetup } from '../context'
 import { colArray, rowArray } from './helpers'
 import { Container, Row, Col } from 'react-grid-system'
 import { InputHandler } from './InputHandler'
+import FormFactoryMapper from './FormFactoryMapper'
 
 function ColGenerator(props) {
-  const { cols, rowIndex } = props
+  const { cols, rowIndex, rowId } = props
   const { formValues, setFormValues } = useFormSetup()
+
   return colArray(cols[rowIndex]).map((inputProps, index) => {
     const { size = {} } = cols[rowIndex]
     if (
@@ -31,6 +33,7 @@ function ColGenerator(props) {
           formValues={formValues}
           setFormValues={setFormValues}
           inputProps={inputProps}
+          rowId={rowId}
         />
       </Col>
     )
@@ -38,13 +41,15 @@ function ColGenerator(props) {
 }
 
 function RowGenerator(props) {
-  const { rows, cols, rowStyle } = props
+  const { rows, cols, rowStyle, rowId, rowTitle } = props
   return (
     <React.Fragment>
       {rowArray(rows).map((_, index) => {
+        const titleStyle = { width: '7vw', textOverflow: 'ellipsis' }
         return (
           <Row key={index} style={rowStyle}>
-            <ColGenerator cols={cols} rowIndex={index} />
+            {!!rowTitle && <div style={titleStyle}>{rowTitle(props)}</div>}
+            <ColGenerator cols={cols} rowId={rowId} rowIndex={index} />
           </Row>
         )
       })}
@@ -52,12 +57,14 @@ function RowGenerator(props) {
   )
 }
 
-const FormFactoryInternal = ({
+export const FormFactoryInternal = ({
   blueprint,
   onSubmit,
   onCancel,
   SubmitButton,
-  CancelButton
+  CancelButton,
+  rowId,
+  rowTitle
 }) => {
   const [submitCount, setSubmitCount] = React.useState(0)
   const { formValues, dirty, setDirty } = useFormSetup()
@@ -95,19 +102,27 @@ const FormFactoryInternal = ({
   }
   return (
     <Container>
-      <RowGenerator rows={rows} cols={cols} rowStyle={rowStyle} />
-      <Row style={buttonContainerStyle}>
-        {SubmitButton ? (
-          <SubmitButton {...buttonProps} />
-        ) : (
-          <button {...submitButtonProps}> Submit </button>
-        )}
-        {CancelButton ? (
-          <CancelButton {...buttonProps} />
-        ) : (
-          <button {...cancelButtonProps}> Cancel </button>
-        )}
-      </Row>
+      <RowGenerator
+        rowTitle={rowTitle}
+        rowId={rowId}
+        rows={rows}
+        cols={cols}
+        rowStyle={rowStyle}
+      />
+      {!rowId && (
+        <Row style={buttonContainerStyle}>
+          {SubmitButton ? (
+            <SubmitButton {...buttonProps} />
+          ) : (
+            <button {...submitButtonProps}> Submit </button>
+          )}
+          {CancelButton ? (
+            <CancelButton {...buttonProps} />
+          ) : (
+            <button {...cancelButtonProps}> Cancel </button>
+          )}
+        </Row>
+      )}
     </Container>
   )
 }
@@ -119,20 +134,40 @@ const FormFactory = ({
   SubmitButton,
   CancelButton,
   validation = () => {},
-  sessionKey = null
+  sessionKey = null,
+  updateLocalState = () => {},
+  fieldMapper,
+  fieldMapperConfig = {},
+  rowValidationConfig = {},
+  updateLocalErrors = () => {},
+  submitCount
 }) => {
   return (
     <FormSetupProvider
+      //
+      submitCount={submitCount}
+      updateLocalErrors={updateLocalErrors}
+      rowValidationConfig={rowValidationConfig}
+      //
+      fieldMapper={fieldMapper}
       sessionKey={sessionKey}
       componentList={componentList}
       initialValues={initialValues}
       validation={validation}
+      updateLocalState={updateLocalState}
     >
-      <FormFactoryInternal
-        CancelButton={CancelButton}
-        SubmitButton={SubmitButton}
-        blueprint={blueprint}
-      />
+      {!fieldMapper ? (
+        <FormFactoryInternal
+          CancelButton={CancelButton}
+          SubmitButton={SubmitButton}
+          blueprint={blueprint}
+        />
+      ) : (
+        <FormFactoryMapper
+          componentList={componentList}
+          config={fieldMapperConfig}
+        />
+      )}
     </FormSetupProvider>
   )
 }

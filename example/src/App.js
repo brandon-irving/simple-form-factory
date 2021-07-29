@@ -1,59 +1,20 @@
 import React from 'react'
-import { blueprint } from './blueprint'
-import { FormFactory } from 'simple-form-factory'
-import 'simple-form-factory/dist/index.css'
-
-const componentList = {
-  Input: (props) => {
-    return (
-      <>
-        <p>title example</p>
-        <input {...props} />
-        {!!props.errors[props.id] && <div>{props.errors[props.id]}</div>}
-      </>
-    )
-  },
-  Select: (props) => {
-    return <select {...props}></select>
-  }
-}
-
-const SubmitButton = (props) => {
-  function handleSubmit(e) {
-    e.preventDefault()
-    props.setInitialValues(props.formValues)
-    props.setDirty(false)
-  }
-  return (
-    <button disabled={!props.dirty} type='submit' onClick={handleSubmit}>
-      Submit
-    </button>
-  )
-}
-
-const CancelButton = () => <button>Delete</button>
-
+import ExampleMapper from './Examples/ExampleMapper'
+import BasicExample from './Examples/BasicExample'
 const App = () => {
-  const [initialValues, setInitialValues] = React.useState({
-    name: 'Brandon',
-    middleName: 'Jamal',
-    lastName: 'irving'
-  })
-  function validation(values) {
-    const errors = {}
-    if (!values.name.length) errors.name = 'Error'
-    return errors
-  }
+  const titleStyle = { textAlign: 'center' }
+  const sectionStyle = { margin: '15px', padding: '15px', border: '1px solid' }
   return (
-    <FormFactory
-      sessionKey='example'
-      initialValues={initialValues}
-      validation={validation}
-      componentList={componentList}
-      blueprint={{ ...blueprint, rowStyle: { margin: '20px' } }}
-      SubmitButton={(props) => SubmitButton({ ...props, setInitialValues })}
-      CancelButton={CancelButton}
-    />
+    <React.Fragment>
+      <div style={sectionStyle}>
+        <h2 style={titleStyle}>Basic Example</h2>
+        <BasicExample />
+      </div>
+      <div style={sectionStyle}>
+      <h2 style={titleStyle}>Field Mapper Example</h2>
+        <ExampleMapper />
+      </div>
+    </React.Fragment>
   )
 }
 
