@@ -67,7 +67,7 @@ export const mapComponentList = {
 export const initialFielValuedMapper = (defaultName) => ({
   numberField: 50,
   loveFood: true,
-  pokemon: defaultName === 'Kerry' ? 'Female' : 'Male',
+  pokemon: '',
   firstName: defaultName,
   middleName: '',
   lastName: ''

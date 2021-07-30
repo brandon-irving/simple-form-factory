@@ -51,6 +51,7 @@
     "dist"
   ],
   "dependencies": {
-    "react-grid-system": "^7.2.0"
+    "react-grid-system": "^7.2.0",
+    "react-select": "^4.3.1"
   }
 }
