@@ -9,6 +9,11 @@ const style = {
   fontSize: '80%',
   color: '#dc3545'
 }
+const labelStyle = {
+  fontWeight: '700!important',
+  display: 'inline-block',
+  marginBottom: '.5rem'
+}
 const ErrorMessage = ({ message }) => {
   return <div style={style}>{message}</div>
 }
@@ -23,7 +28,9 @@ const AsyncSelect = (props) => {
     errors,
     rowid,
     baseid,
-    submitcount
+    submitcount,
+    title = '',
+    label = null
   } = props
   const selectedOption = defaultOptions.find((option) => option.value === value)
 
@@ -39,6 +46,8 @@ const AsyncSelect = (props) => {
 
   return (
     <React.Fragment>
+      {label || <label style={labelStyle}>{title}</label>}
+
       <Select
         {...props}
         defaultOptions={defaultOptions}
