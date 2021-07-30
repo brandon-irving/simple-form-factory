@@ -1,6 +1,5 @@
 import React from 'react'
 import { useFormSetup } from '../context'
-
 const InputLibrary = (coreProps) => {
   const {
     componentList: { Input, Select },
@@ -20,9 +19,6 @@ const InputLibrary = (coreProps) => {
 
   const TextInput = Input || ((props) => <input {...props} />)
 
-  React.useEffect(() => {
-    setstateHeldProps(coreProps)
-  }, [coreProps])
   const SelectInput = Select
     ? (props) => <Select {...props} />
     : (props) => (
@@ -32,12 +28,18 @@ const InputLibrary = (coreProps) => {
           ))}
         </select>
       )
+  function updateInputProps(updates = {}) {
+    setstateHeldProps({ ...stateHeldProps, ...updates })
+  }
 
-  return inputProps.type === 'select' ? (
-    <SelectInput {...inputProps} />
-  ) : (
-    <TextInput {...inputProps} />
-  )
+  React.useEffect(() => {
+    setstateHeldProps(coreProps)
+  }, [coreProps])
+  if (inputProps.type === 'select') {
+    return <SelectInput {...inputProps} updateInputProps={updateInputProps} />
+  }
+
+  return <TextInput {...inputProps} updateInputProps={updateInputProps} />
 }
 export function InputHandler(props) {
   const { formValues, setFormValues, inputProps, rowId } = props
@@ -58,9 +60,11 @@ export function InputHandler(props) {
     setFormValues(newValues)
   }
 
-  async function handleChange(e) {
-    const value =
-      e.target.type !== 'checkbox' ? e.target.value : e.target.checked
+  async function handleChange(e, manualValue) {
+    let value = ''
+    if (manualValue) value = manualValue
+    else
+      value = e.target.type !== 'checkbox' ? e.target.value : e.target.checked
 
     const currentFormValues = () => {
       let desiredCurrentFormValues = !rowId
@@ -83,7 +87,6 @@ export function InputHandler(props) {
     }
 
     setFormValues(currentFormValues())
-
     onChange &&
       (await onChange({
         id,
@@ -95,7 +98,6 @@ export function InputHandler(props) {
         baseId
       }))
   }
-  // console.log('log: inputProps', {inputProps})
 
   return (
     <InputLibrary
