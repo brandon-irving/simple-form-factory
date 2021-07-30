@@ -43,7 +43,7 @@ const ExampleMapper = () => {
 
 
     function onChange(props) {
-      const { formValues, rowId, updateForm, value, baseId } = props
+      const { formValues, rowId, updateForm, baseId } = props
       const updatedFormValues = { ...formValues }
       const updateByRowId = (rowid, updates = {}) => {
         const updatedRow = { ...formValues[rowid], ...updates }
