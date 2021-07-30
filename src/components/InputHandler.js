@@ -7,9 +7,10 @@ const InputLibrary = (coreProps) => {
     errors,
     submitCount
   } = useFormSetup()
+  const [stateHeldProps, setstateHeldProps] = React.useState(coreProps)
 
   const noneInputFields = ['hideColumn', 'hideInput']
-  const allProps = { ...coreProps, submitcount: submitCount }
+  const allProps = { ...stateHeldProps, submitcount: submitCount }
   const inputProps = Object.keys(allProps).reduce((acc, propKey) => {
     if (noneInputFields.includes(propKey)) return acc
     return { ...acc, [propKey]: allProps[propKey] }
@@ -19,6 +20,9 @@ const InputLibrary = (coreProps) => {
 
   const TextInput = Input || ((props) => <input {...props} />)
 
+  React.useEffect(() => {
+    setstateHeldProps(coreProps)
+  }, [coreProps])
   const SelectInput = Select
     ? (props) => <Select {...props} />
     : (props) => (

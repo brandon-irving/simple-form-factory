@@ -1,5 +1,5 @@
 import React from 'react'
-import { config, initialFielValuedMapper, mapComponentList } from './config'
+import { initialFielValuedMapper, mapComponentList } from './config'
 import { FormFactory } from 'simple-form-factory'
 import 'simple-form-factory/dist/index.css'
 
@@ -40,7 +40,63 @@ const ExampleMapper = () => {
       'Tyler': initialFielValuedMapper('Tyler'),
       'Kerry': initialFielValuedMapper('Kerry'),
     }
-  
+    const [options, setoptions] = React.useState([
+      { label: 'None', value: null },
+    ])
+    function onChange({ formValues, id, rowid, updateForm, value }) {
+      const updatedFormValues = { ...formValues }
+      const updateByRowId = (rowid, updates = {}) => {
+        const updatedRow = { ...formValues[rowid], ...updates }
+        return updatedRow
+      }
+    
+      if (rowid === 'Brandon' && value === formValues['Levi'].firstName) {
+        updatedFormValues['Levi'] = updateByRowId('Levi', {
+          firstName: 'Dont Copy Me!'
+        })
+      }
+      updateForm(updatedFormValues)
+    }
+    const config = {
+      topRows: [
+        {
+          1: {
+            id: 'numberField',
+            type: 'number',
+            title: 'Number Field'
+          },
+          2: { id: 'loveFood', type: 'checkbox', title: 'Love Food?' }
+        }
+      ],
+      mapConfig: {
+        rowIds: ['Brandon', 'Levi', 'Tyler', 'Kerry'],
+        rowStyle: { alignItems: 'center' },
+        rowTitle: ({ rowid }) => rowid !== 'topRow' && <h4>{rowid}</h4>,
+        cols: {
+          1: {
+            id: 'pokemon',
+            type: 'select',
+            title: 'pokemon',
+            options
+          },
+          2: {
+            veryMuch: true,
+            id: 'firstName',
+            type: 'text',
+            title: 'First Name',
+            onChange
+          },
+          3: { id: 'middleName', type: 'text', title: 'Middle Name', onChange },
+          4: { id: 'lastName', type: 'text', title: 'Last Name', onChange }
+        }
+      }
+    }
+    async function handleOptionsUpdate(){
+      const data = await fetch('https://pokeapi.co/api/v2/pokemon')
+      const {results} = await data.json()
+      const pokemonOptions = results.map(res=>({value: res.name, label: res.name}))
+      setoptions(pokemonOptions)
+    }
     return (
       <React.Fragment>
       <FormFactory
@@ -53,6 +109,7 @@ const ExampleMapper = () => {
         submitCount={submitCount}
         initialValues={initialValues}
       />
+      <button onClick={handleOptionsUpdate}>Update</button>
       <button onClick={handleSubmit}>Submit</button>
       </React.Fragment>
     )
