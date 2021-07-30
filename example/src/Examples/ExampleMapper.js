@@ -40,21 +40,26 @@ const ExampleMapper = () => {
       'Tyler': initialFielValuedMapper('Tyler'),
       'Kerry': initialFielValuedMapper('Kerry'),
     }
-    const [options, setoptions] = React.useState([
-      { label: 'None', value: null },
-    ])
-    function onChange({ formValues, id, rowid, updateForm, value }) {
+
+
+    function onChange(props) {
+      const { formValues, rowId, updateForm, value, baseId } = props
       const updatedFormValues = { ...formValues }
       const updateByRowId = (rowid, updates = {}) => {
         const updatedRow = { ...formValues[rowid], ...updates }
         return updatedRow
       }
-    
-      if (rowid === 'Brandon' && value === formValues['Levi'].firstName) {
+      console.log('log: props', {
+        rowId, baseId,
+        props, condition: rowId === 'Brandon' && baseId === "pokemon"
+      })
+
+      if (rowId === 'Brandon' && baseId === "pokemon") {
         updatedFormValues['Levi'] = updateByRowId('Levi', {
-          firstName: 'Dont Copy Me!'
+          firstName: 'squirtle'
         })
       }
+      
       updateForm(updatedFormValues)
     }
     const config = {
@@ -75,9 +80,11 @@ const ExampleMapper = () => {
         cols: {
           1: {
             id: 'pokemon',
-            type: 'select',
+            type: 'asyncSelect',
             title: 'pokemon',
-            options
+            defaultOptions: [{ label: 'None', value: null }],
+            loadOptions,
+            onChange
           },
           2: {
             veryMuch: true,
@@ -91,12 +98,14 @@ const ExampleMapper = () => {
         }
       }
     }
-    async function handleOptionsUpdate(){
-      const data = await fetch('https://pokeapi.co/api/v2/pokemon')
-      const {results} = await data.json()
-      const pokemonOptions = results.map(res=>({value: res.name, label: res.name}))
-      setoptions(pokemonOptions)
+    async function loadOptions(){
+        const data = await fetch('https://pokeapi.co/api/v2/pokemon')
+        const {results} = await data.json()
+        const pokemonOptions = results.map(res=>({value: res.name, label: res.name}))
+        return pokemonOptions
+    
     }
+
     return (
       <React.Fragment>
       <FormFactory
@@ -109,7 +118,6 @@ const ExampleMapper = () => {
         submitCount={submitCount}
         initialValues={initialValues}
       />
-      <button onClick={handleOptionsUpdate}>Update</button>
       <button onClick={handleSubmit}>Submit</button>
       </React.Fragment>
     )

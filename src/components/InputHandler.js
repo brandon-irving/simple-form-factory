@@ -1,5 +1,35 @@
+/* eslint-disable no-undef */
 import React from 'react'
+import Select from 'react-select'
 import { useFormSetup } from '../context'
+
+const AsyncSelect = (props) => {
+  const { loadOptions, onChange, value, updateInputProps, defaultOptions } =
+    props
+  const selectedOption = defaultOptions.find((option) => option.value === value)
+
+  async function onMenuOpen() {
+    const options = await loadOptions(props)
+    updateInputProps({ options })
+  }
+
+  async function onInputChange(props) {
+    const event = { target: { value: props.value } }
+    await onChange(event)
+  }
+
+  return (
+    <Select
+      {...props}
+      defaultOptions={defaultOptions}
+      value={selectedOption}
+      onChange={onInputChange}
+      cacheOptions
+      onMenuOpen={onMenuOpen}
+    />
+  )
+}
+
 const InputLibrary = (coreProps) => {
   const {
     componentList: { Input, Select },
@@ -38,7 +68,9 @@ const InputLibrary = (coreProps) => {
   if (inputProps.type === 'select') {
     return <SelectInput {...inputProps} updateInputProps={updateInputProps} />
   }
-
+  if (inputProps.type === 'asyncSelect') {
+    return <AsyncSelect {...inputProps} updateInputProps={updateInputProps} />
+  }
   return <TextInput {...inputProps} updateInputProps={updateInputProps} />
 }
 export function InputHandler(props) {
