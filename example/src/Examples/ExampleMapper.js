@@ -20,7 +20,7 @@ const ExampleMapper = () => {
     }
   
     const rowValidationConfig = {
-      firstName: (props)=>{
+      pokemon: (props)=>{
         let error = null
         if(props.value.length < 3){
           error= 'enter mo letters fam'

@@ -2,10 +2,29 @@
 import React from 'react'
 import Select from 'react-select'
 import { useFormSetup } from '../context'
-
+const style = {
+  textAlign: 'left',
+  width: '100%',
+  marginTop: '0.25rem',
+  fontSize: '80%',
+  color: '#dc3545'
+}
+const ErrorMessage = ({ message }) => {
+  return <div style={style}>{message}</div>
+}
 const AsyncSelect = (props) => {
-  const { loadOptions, onChange, value, updateInputProps, defaultOptions } =
-    props
+  const {
+    loadOptions,
+    onChange,
+    value,
+    updateInputProps,
+    defaultOptions,
+    CustomErrorMessage,
+    errors,
+    rowid,
+    baseid,
+    submitcount
+  } = props
   const selectedOption = defaultOptions.find((option) => option.value === value)
 
   async function onMenuOpen() {
@@ -19,14 +38,22 @@ const AsyncSelect = (props) => {
   }
 
   return (
-    <Select
-      {...props}
-      defaultOptions={defaultOptions}
-      value={selectedOption}
-      onChange={onInputChange}
-      cacheOptions
-      onMenuOpen={onMenuOpen}
-    />
+    <React.Fragment>
+      <Select
+        {...props}
+        defaultOptions={defaultOptions}
+        value={selectedOption}
+        onChange={onInputChange}
+        cacheOptions
+        onMenuOpen={onMenuOpen}
+      />
+      {!!submitcount && !CustomErrorMessage && errors[rowid] && (
+        <ErrorMessage message={errors[rowid][baseid]} />
+      )}
+      {!!submitcount && CustomErrorMessage && errors[rowid] && (
+        <CustomErrorMessage error={errors[rowid][baseid]} />
+      )}
+    </React.Fragment>
   )
 }
 
