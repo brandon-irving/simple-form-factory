@@ -84,7 +84,8 @@ const ExampleMapper = () => {
             title: 'pokemon',
             defaultOptions: [{ label: 'None', value: null }],
             loadOptions,
-            onChange
+            onChange,
+            size: {sm: 1}
           },
           2: {
             veryMuch: true,

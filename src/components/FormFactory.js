@@ -10,7 +10,6 @@ function ColGenerator(props) {
   const { formValues, setFormValues } = useFormSetup()
 
   return colArray(cols[rowIndex]).map((inputProps, index) => {
-    const { size = {} } = cols[rowIndex]
     if (
       inputProps.hideColumn &&
       inputProps.hideColumn({
@@ -26,9 +25,9 @@ function ColGenerator(props) {
         formValues
       })
     )
-      return <Col> {null} </Col>
+      return <Col key={index}> {null} </Col>
     return (
-      <Col {...size} key={index}>
+      <Col {...inputProps.size} key={index}>
         <InputHandler
           formValues={formValues}
           setFormValues={setFormValues}
