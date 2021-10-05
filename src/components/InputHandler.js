@@ -25,18 +25,22 @@ const AsyncSelect = (props) => {
     updateInputProps,
     defaultOptions,
     CustomErrorMessage,
-    errors,
-    rowid,
-    baseid,
     submitcount,
     title = '',
-    label = null
+    label = null,
+    error = null,
+    afterLoadOptions = () => null
   } = props
+  const [isLoading, setisLoading] = React.useState(false)
+  const [options, setoptions] = React.useState(defaultOptions)
   const selectedOption = defaultOptions.find((option) => option.value === value)
 
   async function onMenuOpen() {
+    setisLoading(true)
     const options = await loadOptions(props)
     updateInputProps({ options })
+    setoptions(options)
+    setisLoading(false)
   }
 
   async function onInputChange(props) {
@@ -44,23 +48,29 @@ const AsyncSelect = (props) => {
     await onChange(event)
   }
 
+  React.useEffect(() => {
+    afterLoadOptions({ ...props, options })
+  }, [isLoading])
+  console.log('log: options', { options, defaultOptions })
+
   return (
     <React.Fragment>
       {label || <label style={labelStyle}>{title}</label>}
 
       <Select
         {...props}
-        defaultOptions={defaultOptions}
+        placeholder={isLoading ? 'Loading' : 'Select'}
+        defaultOptions={options}
         value={selectedOption}
         onChange={onInputChange}
         cacheOptions
         onMenuOpen={onMenuOpen}
       />
-      {!!submitcount && !CustomErrorMessage && errors[rowid] && (
-        <ErrorMessage message={errors[rowid][baseid]} />
+      {!!submitcount && !CustomErrorMessage && error && (
+        <ErrorMessage message={error} />
       )}
-      {!!submitcount && CustomErrorMessage && errors[rowid] && (
-        <CustomErrorMessage error={errors[rowid][baseid]} />
+      {!!submitcount && CustomErrorMessage && error && (
+        <CustomErrorMessage error={error} />
       )}
     </React.Fragment>
   )
@@ -105,7 +115,14 @@ const InputLibrary = (coreProps) => {
     return <SelectInput {...inputProps} updateInputProps={updateInputProps} />
   }
   if (inputProps.type === 'asyncSelect') {
-    return <AsyncSelect {...inputProps} updateInputProps={updateInputProps} />
+    const { errors, rowid, baseid } = inputProps
+    return (
+      <AsyncSelect
+        {...inputProps}
+        error={!!errors[rowid] && errors[rowid][baseid]}
+        updateInputProps={updateInputProps}
+      />
+    )
   }
   return <TextInput {...inputProps} updateInputProps={updateInputProps} />
 }
